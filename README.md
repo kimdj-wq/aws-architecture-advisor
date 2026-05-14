@@ -1,73 +1,119 @@
-# React + TypeScript + Vite
+# AWS Architecture Advisor
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+AWS Architecture Advisor is a React + TypeScript web application that recommends AWS architecture patterns and estimates rough monthly costs based on project conditions.
 
-Currently, two official plugins are available:
+The tool is designed for early-stage architecture review and cost estimation without calling actual AWS APIs.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- AWS architecture recommendation based on project type and workload
+- Rough monthly cost estimation using local static pricing data
+- EC2 / RDS / DMS instance family selection
+- DMS, Snapshot, Backup, S3 Staging, and DataSync cost estimation
+- Cost breakdown with calculation details
+- Cost visualization by service/category
+- Japanese / Korean language toggle
+- JSON export for estimation results
+- No AWS API calls or cloud resource creation
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React
+- TypeScript
+- Vite
+- CSS
+- Local static pricing data
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Purpose
+
+This project was created to support the initial review phase of AWS architecture planning.
+
+It helps reduce the time required to compare AWS service options, understand rough cost impact, and explain architecture decisions with visible calculation details.
+
+---
+
+## Important Notes
+
+This tool does not access AWS services and does not create any AWS resources.
+
+All costs are rough estimates based on local static pricing data. Actual AWS billing may differ depending on region, usage, exchange rates, tax, free tier, data transfer, and service-specific pricing rules.
+
+---
+
+## Getting Started
+
+### Install
+
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Run Development Server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+---
+
+## Build
+
+```bash
+npm run build
+```
+
+---
+
+## Main Modules
+
+```txt
+src/App.tsx
+- Main UI, state management, language toggle, export handling
+
+src/awsPricing.ts
+- Local AWS pricing table and cost calculation helpers
+
+src/services/recommendation.ts
+- Architecture recommendation and cost item generation logic
+
+src/i18n.ts
+- Japanese / Korean UI text management
+
+src/components/
+- Input and result display components
+```
+
+---
+
+## Current Scope
+
+This application supports rough estimation and recommendation for:
+
+- General AWS web/application workloads
+- Database migration scenarios
+- DMS-based migration
+- Snapshot / backup / dump-based migration
+- Storage and transfer cost estimation
+
+---
+
+## Future Improvements
+
+- More accurate pricing data update workflow
+- PDF export
+- Dark mode
+- Estimate history
+- AWS Pricing API integration as an optional mode
+- More detailed network cost estimation
+
+---
+
+## License
+
+Internal / personal project.
