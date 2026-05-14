@@ -54,15 +54,26 @@ export type CostItem = {
   detail?: string;
 };
 
+export type RiskBadge = {
+  label: string;
+  level: "info" | "warning" | "danger";
+};
+
 export type RecommendationResult = {
   title: string;
   summary: string;
+
   nodes: ArchitectureNode[];
   costItems: CostItem[];
+
   reasons: string[];
   risks: string[];
+
+  riskBadges: RiskBadge[];
+
   totalMonthlyCost: number;
-  pricingSource?: "local-estimate";
+
+  pricingSource?: string;
   pricingRegion?: string;
 };
 

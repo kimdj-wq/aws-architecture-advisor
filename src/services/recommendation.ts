@@ -15,6 +15,7 @@ import type {
   Requirement,
   SelectOption,
   WorkloadType,
+  RiskBadge,
 } from "../types";
 
 export function getProjectTypeDefaults(projectType: ProjectType): Partial<ProjectConfig> {
@@ -410,6 +411,11 @@ export function createRecommendation(config: ProjectConfig, pricingRates: Pricin
   const risks: string[] = [];
   const trafficLevel = getTrafficLevel(config.users);
   const dataSizeMultiplier = getDataSizeMultiplier(config.dataSize);
+  const riskBadges: RiskBadge[] = [];
+  const finalResolvedMethod = getResolvedMigrationMethod(config);
+  const isDmsMigration = finalResolvedMethod === "dms";
+  const isLargeDataSize = config.dataSize === "1tb" || config.dataSize === "over10tb";
+  const isVeryLargeDataSize = config.dataSize === "over10tb";
 
   const isMigration =
     config.projectType === "onpremToAws" ||
@@ -610,6 +616,34 @@ export function createRecommendation(config: ProjectConfig, pricingRates: Pricin
   const normalizedCostItems = mergeDuplicateCostItems(costItems);
   const totalMonthlyCost = normalizedCostItems.reduce((sum, item) => sum + item.monthly, 0);
 
+  if (totalMonthlyCost >= 1000) {
+    riskBadges.push({
+      label: language === "ja" ? "HIGH MONTHLY COST" : "월 예상 비용 높음",
+      level: "danger",
+    });
+  }
+
+  if (isDmsMigration && isLargeDataSize) {
+    riskBadges.push({
+      label: language === "ja" ? "LONG RUNNING DMS" : "장시간 DMS 예상",
+      level: "warning",
+    });
+  }
+
+  if (isLargeDataSize) {
+    riskBadges.push({
+      label: language === "ja" ? "LARGE DATA TRANSFER" : "대용량 데이터 전송",
+      level: "warning",
+    });
+  }
+
+  if (isVeryLargeDataSize) {
+    riskBadges.push({
+      label: language === "ja" ? "OVER 10TB DATA" : "10TB 이상 데이터",
+      level: "danger",
+    });
+  }
+
   return {
     title,
     summary,
@@ -617,6 +651,7 @@ export function createRecommendation(config: ProjectConfig, pricingRates: Pricin
     costItems: normalizedCostItems,
     reasons,
     risks,
+    riskBadges,
     totalMonthlyCost,
     pricingSource: pricingRates.source,
     pricingRegion: pricingRates.region,
